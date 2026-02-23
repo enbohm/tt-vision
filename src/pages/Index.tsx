@@ -3,36 +3,69 @@ import { Activity } from "lucide-react";
 import VideoUploader from "@/components/VideoUploader";
 import AnalysisResults from "@/components/AnalysisResults";
 import { Button } from "@/components/ui/button";
+import { extractFrames } from "@/lib/video-utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-const mockAnalysis = {
-  totalRallies: 18,
-  avgRallyLength: 4.2,
-  longestRally: 12,
-  player1Score: 11,
-  player2Score: 7,
-  serveSpeed: "~45 km/h",
-  topspinShots: 34,
-  backhandWinners: 5,
-  forehandWinners: 8,
-  netPoints: 3,
-};
-
-type AppState = "upload" | "analyzing" | "results";
+type AppState = "upload" | "extracting" | "analyzing" | "results" | "error";
 
 const Index = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [state, setState] = useState<AppState>("upload");
+  const [analysis, setAnalysis] = useState<any>(null);
+  const [errorMsg, setErrorMsg] = useState("");
+  const { toast } = useToast();
 
-  const handleAnalyze = () => {
-    setState("analyzing");
-    // Simulate analysis — will be replaced with real AI backend
-    setTimeout(() => setState("results"), 3000);
+  const handleAnalyze = async () => {
+    if (!selectedFile) return;
+
+    try {
+      setState("extracting");
+
+      const frames = await extractFrames(selectedFile, 6);
+
+      setState("analyzing");
+
+      const { data, error } = await supabase.functions.invoke("analyze-match", {
+        body: { frames },
+      });
+
+      if (error) {
+        throw new Error(error.message || "Analysis failed");
+      }
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      setAnalysis(data);
+      setState("results");
+    } catch (err: any) {
+      console.error("Analysis error:", err);
+      const msg = err?.message || "Something went wrong";
+      setErrorMsg(msg);
+      setState("error");
+      toast({
+        title: "Analysis Failed",
+        description: msg,
+        variant: "destructive",
+      });
+    }
   };
 
   const handleReset = () => {
     setSelectedFile(null);
     setState("upload");
+    setAnalysis(null);
+    setErrorMsg("");
   };
+
+  const statusText =
+    state === "extracting"
+      ? "Extracting video frames..."
+      : state === "analyzing"
+      ? "AI is analyzing your match..."
+      : "";
 
   return (
     <div className="min-h-screen bg-background">
@@ -53,11 +86,12 @@ const Index = () => {
 
       {/* Main */}
       <main className="container max-w-3xl mx-auto px-4 py-8 space-y-6">
-        {/* Upload Section */}
         <VideoUploader
           onVideoSelect={(file) => {
             setSelectedFile(file);
             setState("upload");
+            setAnalysis(null);
+            setErrorMsg("");
           }}
           selectedFile={selectedFile}
           onClear={handleReset}
@@ -77,20 +111,37 @@ const Index = () => {
           </div>
         )}
 
-        {/* Results */}
-        {(state === "analyzing" || state === "results") && (
-          <AnalysisResults
-            data={mockAnalysis}
-            isLoading={state === "analyzing"}
-          />
+        {/* Loading States */}
+        {(state === "extracting" || state === "analyzing") && (
+          <AnalysisResults data={null} isLoading statusText={statusText} />
         )}
 
-        {state === "results" && (
-          <div className="flex justify-center pt-4 animate-slide-up" style={{ animationDelay: "600ms" }}>
+        {/* Error */}
+        {state === "error" && (
+          <div className="text-center space-y-4 animate-slide-up">
+            <p className="text-destructive font-mono text-sm">{errorMsg}</p>
             <Button variant="outline" onClick={handleReset}>
-              Analyze Another Clip
+              Try Again
             </Button>
           </div>
+        )}
+
+        {/* Results */}
+        {state === "results" && analysis && (
+          <>
+            <AnalysisResults data={analysis} />
+            {analysis.summary && (
+              <div className="bg-gradient-card rounded-lg border border-border p-5 animate-slide-up" style={{ animationDelay: "600ms" }}>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">AI Summary</p>
+                <p className="text-sm text-foreground leading-relaxed">{analysis.summary}</p>
+              </div>
+            )}
+            <div className="flex justify-center pt-4 animate-slide-up" style={{ animationDelay: "700ms" }}>
+              <Button variant="outline" onClick={handleReset}>
+                Analyze Another Clip
+              </Button>
+            </div>
+          </>
         )}
       </main>
     </div>

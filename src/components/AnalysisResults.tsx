@@ -15,11 +15,12 @@ interface AnalysisData {
 }
 
 interface AnalysisResultsProps {
-  data: AnalysisData;
+  data: AnalysisData | null;
   isLoading?: boolean;
+  statusText?: string;
 }
 
-const AnalysisResults = ({ data, isLoading }: AnalysisResultsProps) => {
+const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) => {
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -29,7 +30,7 @@ const AnalysisResults = ({ data, isLoading }: AnalysisResultsProps) => {
           </div>
           <div>
             <h2 className="text-lg font-semibold text-foreground">Analyzing Match...</h2>
-            <p className="text-sm text-muted-foreground">Processing video frames</p>
+            <p className="text-sm text-muted-foreground">{statusText || "Processing video frames"}</p>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
