@@ -91,7 +91,7 @@ const VideoUploader = ({ onVideoSelect, selectedFile, onClear }: VideoUploaderPr
           {isDragging ? "Drop your video here" : "Drag & drop your match clip"}
         </p>
         <p className="text-sm text-muted-foreground mt-1">
-          or click to browse · MP4, MOV, WebM · Max 2 min
+          or click to browse · MP4, MOV, WebM · Max 250 MB
         </p>
       </div>
     </label>
