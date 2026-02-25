@@ -86,12 +86,15 @@ const VideoUploader = ({ onVideoSelect, selectedFile, onClear }: VideoUploaderPr
       >
         <Upload className={`w-8 h-8 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
       </div>
-      <div className="text-center">
+      <div className="text-center space-y-2">
         <p className="text-foreground font-medium">
           {isDragging ? "Drop your video here" : "Drag & drop your match clip"}
         </p>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-muted-foreground">
           or click to browse · MP4, MOV, WebM · Max 250 MB
+        </p>
+        <p className="text-xs text-muted-foreground/70 max-w-xs mx-auto leading-relaxed">
+          For best results: good resolution (720p+), both players visible, steady camera, and good lighting
         </p>
       </div>
     </label>
