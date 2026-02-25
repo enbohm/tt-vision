@@ -27,7 +27,7 @@ serve(async (req) => {
     }
 
     // Build image content parts from base64 frames
-    const imageParts = frames.slice(0, 8).map((frame: string) => ({
+    const imageParts = frames.slice(0, 20).map((frame: string) => ({
       type: "image_url" as const,
       image_url: { url: frame },
     }));
