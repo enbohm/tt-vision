@@ -60,6 +60,19 @@ Analyze the frames carefully and provide match analysis. You must respond with O
   "backhandWinners": <number, estimated backhand winners>,
   "forehandWinners": <number, estimated forehand winners>,
   "netPoints": <number, estimated net/short game points>,
+  "unforcedErrors": <number, errors made without pressure from opponent>,
+  "forcedErrors": <number, errors caused by opponent's good shot>,
+  "underPressureErrors": <number, errors made while under heavy pressure>,
+  "tacticalErrors": <number, wrong shot selection decisions>,
+  "pointsWon": <number, total points won by player 1>,
+  "pointsLost": <number, total points lost by player 1>,
+  "pointsWonOnServe": <number, points won when player 1 served>,
+  "pointsWonOnReturn": <number, points won when opponent served>,
+  "fhForcedErrorsCreated": <number, forced errors created via forehand>,
+  "fhOpeningAttacks": <number, forehand opening attacks attempted>,
+  "fhOpeningAttackSuccess": <number, percentage of successful FH opening attacks>,
+  "bhOpeningAttacks": <number, backhand opening attacks attempted>,
+  "bhOpeningAttackSuccess": <number, percentage of successful BH opening attacks>,
   "summary": "<string, 2-3 sentence summary of the match dynamics, playing styles, and key observations>"
 }
 
