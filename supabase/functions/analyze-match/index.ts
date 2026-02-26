@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { frames } = await req.json();
+    const { frames, chunkIndex, totalChunks, startTime, endTime } = await req.json();
 
     if (!frames || !Array.isArray(frames) || frames.length === 0) {
       return new Response(JSON.stringify({ error: "No frames provided" }), {
@@ -32,6 +32,10 @@ serve(async (req) => {
       image_url: { url: frame },
     }));
 
+    const chunkContext = totalChunks > 1
+      ? `\n\nIMPORTANT: This is segment ${chunkIndex + 1} of ${totalChunks} (time ${Math.round(startTime)}s – ${Math.round(endTime)}s). Only report what happens in THIS segment. The results will be summed across all segments automatically. For "score", report ONLY the points scored in this segment (not cumulative). Be thorough — count EVERY rally and point in these frames.`
+      : "";
+
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
@@ -45,20 +49,20 @@ serve(async (req) => {
           messages: [
             {
               role: "system",
-              content: `You are a professional table tennis match analyst. You are given frames extracted from a short table tennis match video clip (1-2 minutes).
+              content: `You are a professional table tennis match analyst. You are given frames extracted from a table tennis match video.
 
 Player 1 = left/near side of the table. Player 2 = right/far side.
 
 Analyze the frames carefully and provide match analysis. You must respond with ONLY a valid JSON object (no markdown, no code blocks) with this exact structure:
 
 {
-  "totalPoints": <number, total points played>,
-  "totalRallies": <number, estimated total rallies>,
-  "avgRallyLength": <number, estimated average rally length in seconds>,
-  "longestRally": <number, estimated longest rally in seconds>,
+  "totalPoints": <number, total points played in this segment>,
+  "totalRallies": <number, total rallies in this segment>,
+  "avgRallyLength": <number, average rally length in seconds>,
+  "longestRally": <number, longest rally in seconds>,
   "serveSpeed": "<string, estimated serve speed like '~40 km/h'>",
   "player1": {
-    "score": <number>,
+    "score": <number, points WON by player 1 in this segment>,
     "pointsWonOnServe": <number>,
     "pointsWonOnReturn": <number>,
     "forehandWinners": <number>,
@@ -76,7 +80,7 @@ Analyze the frames carefully and provide match analysis. You must respond with O
     "bhOpeningAttackSuccess": <number, percentage>
   },
   "player2": {
-    "score": <number>,
+    "score": <number, points WON by player 2 in this segment>,
     "pointsWonOnServe": <number>,
     "pointsWonOnReturn": <number>,
     "forehandWinners": <number>,
@@ -93,17 +97,17 @@ Analyze the frames carefully and provide match analysis. You must respond with O
     "bhOpeningAttacks": <number>,
     "bhOpeningAttackSuccess": <number, percentage>
   },
-  "summary": "<string, 2-3 sentence summary of the match dynamics, playing styles, and key observations>"
+  "summary": "<string, 1-2 sentence summary of what happened in this segment>"
 }
 
-Base your estimates on what you can observe: player positions, ball trajectory, stroke types, body mechanics, table setup, scoreboard if visible. Be reasonable with estimates. If you cannot determine something precisely, provide your best estimate based on the visual evidence.`,
+Count EVERY point carefully. Each rally that ends with a point scored must be counted. Be thorough and precise. If you can see a scoreboard, use it to verify your counts.${chunkContext}`,
             },
             {
               role: "user",
               content: [
                 {
                   type: "text",
-                  text: "Analyze these frames from a table tennis match video. Provide detailed match statistics.",
+                  text: `Analyze these ${frames.length} frames from a table tennis match video. Count every single point and rally carefully.`,
                 },
                 ...imageParts,
               ],
