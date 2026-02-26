@@ -1,7 +1,7 @@
 /**
  * Extract evenly-spaced frames from a video file as base64 data URLs.
  */
-export async function extractFrames(file: File, count = 6): Promise<string[]> {
+export async function extractFrames(file: File, framesPerSecond = 0.5): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const video = document.createElement("video");
     video.preload = "auto";
@@ -14,6 +14,7 @@ export async function extractFrames(file: File, count = 6): Promise<string[]> {
 
     video.onloadedmetadata = () => {
       const duration = video.duration;
+      const count = Math.max(6, Math.ceil(duration * framesPerSecond));
       // Cap dimensions for smaller payloads
       const scale = Math.min(1, 640 / Math.max(video.videoWidth, video.videoHeight));
       canvas.width = Math.round(video.videoWidth * scale);

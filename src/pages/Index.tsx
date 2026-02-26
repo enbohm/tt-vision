@@ -22,7 +22,7 @@ const Index = () => {
     try {
       setState("extracting");
 
-      const frames = await extractFrames(selectedFile, 20);
+      const frames = await extractFrames(selectedFile);
 
       setState("analyzing");
 
