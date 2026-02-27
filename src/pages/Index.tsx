@@ -15,7 +15,7 @@ const Index = () => {
   const [state, setState] = useState<AppState>("upload");
   const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
-  const [progress, setProgress] = useState({ current: 0, total: 0, retrying: false });
+  const [progress, setProgress] = useState({ current: 0, total: 0, retrying: false, retryDelay: 0 });
   const { toast } = useToast();
   const cancelRef = useRef(false);
 
@@ -30,17 +30,18 @@ const Index = () => {
       const chunks = await extractFramesInChunks(selectedFile, 30, 1);
 
       setState("analyzing");
-      setProgress({ current: 0, total: chunks.length, retrying: false });
+      setProgress({ current: 0, total: chunks.length, retrying: false, retryDelay: 0 });
 
       let accumulated = emptyAnalysis();
 
       for (let i = 0; i < chunks.length; i++) {
         if (cancelRef.current) return;
 
-        setProgress({ current: i + 1, total: chunks.length, retrying: false });
+        setProgress({ current: i + 1, total: chunks.length, retrying: false, retryDelay: 0 });
 
         let chunkData: any = null;
-        const maxRetries = 3;
+        const maxRetries = 5;
+        const backoffDelays = [15000, 30000, 45000, 60000, 60000];
         for (let attempt = 0; attempt < maxRetries; attempt++) {
           const { data, error } = await supabase.functions.invoke("analyze-match", {
             body: {
@@ -52,14 +53,20 @@ const Index = () => {
             },
           });
 
-          const isRateLimit =
-            error?.message?.includes("429") ||
-            error?.message?.toLowerCase().includes("rate limit") ||
-            data?.error?.toLowerCase?.()?.includes("rate limit");
+          const errorMsg = error?.message?.toLowerCase() || "";
+          const dataError = data?.error?.toLowerCase?.() || "";
+          const isRetryable =
+            errorMsg.includes("429") ||
+            errorMsg.includes("rate limit") ||
+            errorMsg.includes("non-2xx") ||
+            errorMsg.includes("timeout") ||
+            errorMsg.includes("failed to fetch") ||
+            dataError.includes("rate limit");
 
-          if (isRateLimit && attempt < maxRetries - 1) {
-            setProgress((prev) => ({ ...prev, retrying: true }));
-            await new Promise((r) => setTimeout(r, 30000));
+          if (isRetryable && attempt < maxRetries - 1) {
+            const delay = backoffDelays[attempt];
+            setProgress((prev) => ({ ...prev, retrying: true, retryDelay: Math.round(delay / 1000) }));
+            await new Promise((r) => setTimeout(r, delay));
             setProgress((prev) => ({ ...prev, retrying: false }));
             continue;
           }
@@ -95,7 +102,7 @@ const Index = () => {
     setState("upload");
     setAnalysis(null);
     setErrorMsg("");
-    setProgress({ current: 0, total: 0, retrying: false });
+    setProgress({ current: 0, total: 0, retrying: false, retryDelay: 0 });
   };
 
   const statusText =
@@ -103,7 +110,7 @@ const Index = () => {
       ? "Extracting video frames..."
       : state === "analyzing"
       ? progress.retrying
-        ? `Rate limited — retrying segment ${progress.current} of ${progress.total} in 30s...`
+        ? `Rate limited — retrying segment ${progress.current} of ${progress.total} in ${progress.retryDelay}s...`
         : `Analyzing segment ${progress.current} of ${progress.total}...`
       : "";
 
