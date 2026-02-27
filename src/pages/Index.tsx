@@ -204,6 +204,41 @@ const Index = () => {
         {state === "results" && analysis && (
           <>
             <AnalysisResults data={analysis} />
+            {/* Player Insights */}
+            {(analysis.player1Insight?.strength || analysis.player2Insight?.strength) && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up" style={{ animationDelay: "550ms" }}>
+                {analysis.player1Insight?.strength && (
+                  <div className="bg-gradient-card rounded-lg border border-border p-5">
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">Player 1 Insight</p>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <span className="text-emerald-500 font-bold text-sm shrink-0">+</span>
+                        <p className="text-sm text-foreground">{analysis.player1Insight.strength}</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-destructive font-bold text-sm shrink-0">−</span>
+                        <p className="text-sm text-foreground">{analysis.player1Insight.weakness}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {analysis.player2Insight?.strength && (
+                  <div className="bg-gradient-card rounded-lg border border-border p-5">
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">Player 2 Insight</p>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <span className="text-emerald-500 font-bold text-sm shrink-0">+</span>
+                        <p className="text-sm text-foreground">{analysis.player2Insight.strength}</p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-destructive font-bold text-sm shrink-0">−</span>
+                        <p className="text-sm text-foreground">{analysis.player2Insight.weakness}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             {analysis.summary && (
               <div className="bg-gradient-card rounded-lg border border-border p-5 animate-slide-up" style={{ animationDelay: "600ms" }}>
                 <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">AI Summary</p>

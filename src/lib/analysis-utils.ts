@@ -21,6 +21,11 @@ export interface PlayerStats {
   bhOpeningAttackSuccess: number;
 }
 
+export interface PlayerInsight {
+  strength: string;
+  weakness: string;
+}
+
 export interface AnalysisData {
   totalPoints: number;
   totalRallies: number;
@@ -30,6 +35,8 @@ export interface AnalysisData {
   player1: PlayerStats;
   player2: PlayerStats;
   summary?: string;
+  player1Insight?: PlayerInsight;
+  player2Insight?: PlayerInsight;
 }
 
 const emptyPlayerStats = (): PlayerStats => ({
@@ -61,6 +68,8 @@ export function emptyAnalysis(): AnalysisData {
     player1: emptyPlayerStats(),
     player2: emptyPlayerStats(),
     summary: "",
+    player1Insight: { strength: "", weakness: "" },
+    player2Insight: { strength: "", weakness: "" },
   };
 }
 
@@ -131,6 +140,14 @@ export function mergeChunkIntoAnalysis(
   // Collect summaries
   const summaries = [acc.summary, chunk.summary].filter(Boolean);
 
+  // Use the latest chunk's insights (last segment gives best overall picture)
+  const player1Insight = chunk.player1Insight?.strength
+    ? chunk.player1Insight
+    : acc.player1Insight;
+  const player2Insight = chunk.player2Insight?.strength
+    ? chunk.player2Insight
+    : acc.player2Insight;
+
   return {
     totalPoints: acc.totalPoints + chunk.totalPoints,
     totalRallies,
@@ -140,5 +157,7 @@ export function mergeChunkIntoAnalysis(
     player1: p1,
     player2: p2,
     summary: summaries.join(" "),
+    player1Insight,
+    player2Insight,
   };
 }

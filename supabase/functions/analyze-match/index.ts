@@ -104,7 +104,15 @@ Analyze the frames carefully and provide match analysis. You must respond with O
     "bhOpeningAttacks": <number>,
     "bhOpeningAttackSuccess": <number, percentage>
   },
-  "summary": "<string, 1-2 sentence summary of what happened in this segment>"
+  "summary": "<string, 1-2 sentence summary of what happened in this segment>",
+  "player1Insight": {
+    "strength": "<string, one key strength of player 1 based on this segment>",
+    "weakness": "<string, one key weakness of player 1 based on this segment>"
+  },
+  "player2Insight": {
+    "strength": "<string, one key strength of player 2 based on this segment>",
+    "weakness": "<string, one key weakness of player 2 based on this segment>"
+  }
 }
 
 Count EVERY point carefully. Each rally that ends with a point scored must be counted. Be thorough and precise. If you can see a scoreboard, use it to verify your counts.${chunkContext}`,
