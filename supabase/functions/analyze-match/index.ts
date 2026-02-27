@@ -51,7 +51,14 @@ serve(async (req) => {
               role: "system",
               content: `You are a professional table tennis match analyst. You are given frames extracted from a table tennis match video.
 
-Player 1 = left/near side of the table. Player 2 = right/far side.
+Player 1 = left/near side of the table at the START of the video. Player 2 = right/far side at the START.
+
+IMPORTANT TABLE TENNIS RULES:
+- A game (set) is played to 11 points, and must be won by a 2-point margin.
+- After each game ends, players SWITCH SIDES. So if Player 1 was on the left, after the first game Player 1 moves to the right side and Player 2 to the left.
+- When you detect players changing sides, treat it as the end of a game. The score at that point should reflect an 11-point game (e.g. 11-9, 11-7, 11-5, etc.).
+- After a side change, continue tracking points for the NEW game but keep accumulating the total score.
+- Track which player is which based on their appearance (clothing, build, etc.), NOT their position, since positions swap after each game.
 
 Analyze the frames carefully and provide match analysis. You must respond with ONLY a valid JSON object (no markdown, no code blocks) with this exact structure:
 
