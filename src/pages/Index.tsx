@@ -120,8 +120,9 @@ const Index = () => {
       {/* Header */}
       <header className="border-b border-border">
         <div className="container max-w-3xl mx-auto flex items-center gap-3 py-4 px-4">
-          <div className="p-2 rounded-lg bg-primary/10 glow-primary">
-            <PingPongIcon className="w-6 h-6 text-primary" />
+          <div className="p-2 rounded-lg bg-primary/10 glow-primary flex items-center gap-2">
+            <Activity className="w-5 h-5 text-primary" />
+            <PingPongIcon className="w-5 h-5 text-red-500" />
           </div>
           <div>
             <h1 className="text-lg font-bold text-foreground tracking-tight">
