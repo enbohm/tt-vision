@@ -34,6 +34,8 @@ export interface AnalysisData {
   serveSpeed: string;
   player1Color?: string;
   player2Color?: string;
+  player1Position?: string;
+  player2Position?: string;
   player1: PlayerStats;
   player2: PlayerStats;
   summary?: string;
@@ -69,6 +71,8 @@ export function emptyAnalysis(): AnalysisData {
     serveSpeed: "—",
     player1Color: "",
     player2Color: "",
+    player1Position: "",
+    player2Position: "",
     player1: emptyPlayerStats(),
     player2: emptyPlayerStats(),
     summary: "",
@@ -160,6 +164,8 @@ export function mergeChunkIntoAnalysis(
     serveSpeed: chunk.serveSpeed || acc.serveSpeed,
     player1Color: chunk.player1Color || acc.player1Color,
     player2Color: chunk.player2Color || acc.player2Color,
+    player1Position: chunk.player1Position || acc.player1Position,
+    player2Position: chunk.player2Position || acc.player2Position,
     player1: p1,
     player2: p2,
     summary: summaries.join(" "),

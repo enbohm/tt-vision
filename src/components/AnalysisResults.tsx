@@ -29,6 +29,8 @@ interface AnalysisData {
   serveSpeed: string;
   player1Color?: string;
   player2Color?: string;
+  player1Position?: string;
+  player2Position?: string;
   player1: PlayerStats;
   player2: PlayerStats;
   summary?: string;
@@ -105,8 +107,11 @@ const PlayerStatsSection = ({ stats, label, baseDelay = 0 }: { stats: PlayerStat
   </div>
 );
 
-function playerLabel(base: string, color?: string): string {
-  if (color) return `${base} (${color})`;
+function playerLabel(base: string, color?: string, position?: string): string {
+  const parts: string[] = [];
+  if (color) parts.push(color);
+  if (position) parts.push(position);
+  if (parts.length > 0) return `${base} (${parts.join(", ")})`;
   return base;
 }
 
@@ -137,8 +142,8 @@ const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) 
 
   if (!data) return null;
 
-  const p1Label = playerLabel("Player 1", data.player1Color);
-  const p2Label = playerLabel("Player 2", data.player2Color);
+  const p1Label = playerLabel("Player 1", data.player1Color, data.player1Position);
+  const p2Label = playerLabel("Player 2", data.player2Color, data.player2Position);
 
   return (
     <div className="space-y-6">

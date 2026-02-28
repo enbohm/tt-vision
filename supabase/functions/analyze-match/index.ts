@@ -55,6 +55,8 @@ Player 1 = left/near side of the table at the START of the video. Player 2 = rig
 
 PLAYER IDENTIFICATION: Look at the t-shirt/clothing color of each player. Report the dominant clothing color for each player (e.g. "red", "yellow", "blue", "white", "black"). This helps label them throughout the match.
 
+PLAYER POSITION: Determine each player's position relative to the camera. If the camera is filming from the side, report "left" or "right". If the camera is filming from behind one end, report "near" (closer to camera) or "far" (further from camera). This is the STARTING position at the beginning of the video.
+
 IMPORTANT TABLE TENNIS RULES:
 - A game (set) is played to 11 points, and must be won by a 2-point margin.
 - After each game ends, players SWITCH SIDES. So if Player 1 was on the left, after the first game Player 1 moves to the right side and Player 2 to the left.
@@ -72,6 +74,8 @@ Analyze the frames carefully and provide match analysis. You must respond with O
   "serveSpeed": "<string, estimated serve speed like '~40 km/h'>",
   "player1Color": "<string, dominant t-shirt/clothing color of player 1, e.g. 'red', 'yellow', 'blue'>",
   "player2Color": "<string, dominant t-shirt/clothing color of player 2>",
+  "player1Position": "<string, starting position: 'left', 'right', 'near', or 'far'>",
+  "player2Position": "<string, starting position: 'left', 'right', 'near', or 'far'>",
   "player1": {
     "score": <number, points WON by player 1 in this segment>,
     "pointsWonOnServe": <number>,
