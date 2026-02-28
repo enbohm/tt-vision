@@ -210,7 +210,7 @@ const Index = () => {
                 {analysis.player1Insight?.strength && (
                   <div className="bg-gradient-card rounded-lg border border-border p-5">
                     <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
-                      {analysis.player1Color ? `Player 1 (${analysis.player1Color}) Insight` : "Player 1 Insight"}
+                      {analysis.player1Color ? `Player 1 (${[analysis.player1Color, analysis.player1Position].filter(Boolean).join(", ")}) Insight` : "Player 1 Insight"}
                     </p>
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
@@ -227,7 +227,7 @@ const Index = () => {
                 {analysis.player2Insight?.strength && (
                   <div className="bg-gradient-card rounded-lg border border-border p-5">
                     <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
-                      {analysis.player2Color ? `Player 2 (${analysis.player2Color}) Insight` : "Player 2 Insight"}
+                      {analysis.player2Color ? `Player 2 (${[analysis.player2Color, analysis.player2Position].filter(Boolean).join(", ")}) Insight` : "Player 2 Insight"}
                     </p>
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
