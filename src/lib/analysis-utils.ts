@@ -32,6 +32,8 @@ export interface AnalysisData {
   avgRallyLength: number;
   longestRally: number;
   serveSpeed: string;
+  player1Color?: string;
+  player2Color?: string;
   player1: PlayerStats;
   player2: PlayerStats;
   summary?: string;
@@ -65,6 +67,8 @@ export function emptyAnalysis(): AnalysisData {
     avgRallyLength: 0,
     longestRally: 0,
     serveSpeed: "—",
+    player1Color: "",
+    player2Color: "",
     player1: emptyPlayerStats(),
     player2: emptyPlayerStats(),
     summary: "",
@@ -154,6 +158,8 @@ export function mergeChunkIntoAnalysis(
     avgRallyLength: Math.round(avgRallyLength * 10) / 10,
     longestRally: Math.max(acc.longestRally, chunk.longestRally),
     serveSpeed: chunk.serveSpeed || acc.serveSpeed,
+    player1Color: chunk.player1Color || acc.player1Color,
+    player2Color: chunk.player2Color || acc.player2Color,
     player1: p1,
     player2: p2,
     summary: summaries.join(" "),

@@ -27,6 +27,8 @@ interface AnalysisData {
   avgRallyLength: number;
   longestRally: number;
   serveSpeed: string;
+  player1Color?: string;
+  player2Color?: string;
   player1: PlayerStats;
   player2: PlayerStats;
   summary?: string;
@@ -103,6 +105,11 @@ const PlayerStatsSection = ({ stats, label, baseDelay = 0 }: { stats: PlayerStat
   </div>
 );
 
+function playerLabel(base: string, color?: string): string {
+  if (color) return `${base} (${color})`;
+  return base;
+}
+
 const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) => {
   if (isLoading) {
     return (
@@ -130,6 +137,9 @@ const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) 
 
   if (!data) return null;
 
+  const p1Label = playerLabel("Player 1", data.player1Color);
+  const p2Label = playerLabel("Player 2", data.player2Color);
+
   return (
     <div className="space-y-6">
       {/* Score */}
@@ -142,12 +152,12 @@ const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) 
         </div>
         <div className="bg-gradient-card rounded-lg border border-border p-6 flex items-center justify-center gap-8">
           <div className="text-center">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-1">Player 1</p>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-1">{p1Label}</p>
             <p className="text-5xl font-bold font-mono text-primary">{data.player1.score}</p>
           </div>
           <div className="text-2xl text-muted-foreground font-mono">—</div>
           <div className="text-center">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-1">Player 2</p>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-1">{p2Label}</p>
             <p className="text-5xl font-bold font-mono text-foreground">{data.player2.score}</p>
           </div>
         </div>
@@ -177,14 +187,14 @@ const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) 
       {/* Per-Player Tabs */}
       <Tabs defaultValue="player1" className="animate-slide-up" style={{ animationDelay: "400ms" }}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="player1">Player 1</TabsTrigger>
-          <TabsTrigger value="player2">Player 2</TabsTrigger>
+          <TabsTrigger value="player1">{p1Label}</TabsTrigger>
+          <TabsTrigger value="player2">{p2Label}</TabsTrigger>
         </TabsList>
         <TabsContent value="player1" className="mt-4">
-          <PlayerStatsSection stats={data.player1} label="Player 1" baseDelay={450} />
+          <PlayerStatsSection stats={data.player1} label={p1Label} baseDelay={450} />
         </TabsContent>
         <TabsContent value="player2" className="mt-4">
-          <PlayerStatsSection stats={data.player2} label="Player 2" baseDelay={450} />
+          <PlayerStatsSection stats={data.player2} label={p2Label} baseDelay={450} />
         </TabsContent>
       </Tabs>
     </div>
