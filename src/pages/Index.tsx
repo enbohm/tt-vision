@@ -6,6 +6,7 @@ import AnalysisResults from "@/components/AnalysisResults";
 import { Button } from "@/components/ui/button";
 import { extractFramesInChunks } from "@/lib/video-utils";
 import { emptyAnalysis, mergeChunkIntoAnalysis, type AnalysisData } from "@/lib/analysis-utils";
+import { getPlayerNames, playerLabel } from "@/components/AnalysisResults";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -205,12 +206,16 @@ const Index = () => {
           <>
             <AnalysisResults data={analysis} />
             {/* Player Insights */}
-            {(analysis.player1Insight?.strength || analysis.player2Insight?.strength) && (
+            {(() => {
+              const [n1, n2] = getPlayerNames();
+              const p1Label = playerLabel(n1, analysis.player1Color, analysis.player1Position);
+              const p2Label = playerLabel(n2, analysis.player2Color, analysis.player2Position);
+              return (analysis.player1Insight?.strength || analysis.player2Insight?.strength) ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up" style={{ animationDelay: "550ms" }}>
                 {analysis.player1Insight?.strength && (
                   <div className="bg-gradient-card rounded-lg border border-border p-5">
                     <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
-                      {analysis.player1Color ? `Player 1 (${[analysis.player1Color, analysis.player1Position].filter(Boolean).join(", ")}) Insight` : "Player 1 Insight"}
+                      {p1Label} Insight
                     </p>
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
@@ -227,7 +232,7 @@ const Index = () => {
                 {analysis.player2Insight?.strength && (
                   <div className="bg-gradient-card rounded-lg border border-border p-5">
                     <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
-                      {analysis.player2Color ? `Player 2 (${[analysis.player2Color, analysis.player2Position].filter(Boolean).join(", ")}) Insight` : "Player 2 Insight"}
+                      {p2Label} Insight
                     </p>
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
@@ -242,7 +247,8 @@ const Index = () => {
                   </div>
                 )}
               </div>
-            )}
+              ) : null;
+            })()}
             {analysis.summary && (
               <div className="bg-gradient-card rounded-lg border border-border p-5 animate-slide-up" style={{ animationDelay: "600ms" }}>
                 <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">AI Summary</p>

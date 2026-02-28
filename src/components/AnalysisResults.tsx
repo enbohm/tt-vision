@@ -107,7 +107,28 @@ const PlayerStatsSection = ({ stats, label, baseDelay = 0 }: { stats: PlayerStat
   </div>
 );
 
-function playerLabel(base: string, color?: string, position?: string): string {
+export const FUNNY_NAMES = [
+  "Lightning Jane", "Speedy John", "Smash Karen", "Topspin Tony",
+  "Backhand Betty", "Slice Sam", "Loop Larry", "Rocket Rachel",
+  "Spin Doctor Dave", "Ace Alice", "Thunder Tom", "Whiplash Wendy",
+  "Blitz Boris", "Chop Chloe", "Fury Frank", "Turbo Tina",
+];
+
+let _cachedNames: [string, string] | null = null;
+let _cachedMinute = -1;
+
+export function getPlayerNames(): [string, string] {
+  const minute = Math.floor(Date.now() / 60000);
+  if (_cachedNames && _cachedMinute === minute) return _cachedNames;
+  const i1 = minute % FUNNY_NAMES.length;
+  let i2 = (minute * 7 + 3) % FUNNY_NAMES.length;
+  if (i2 === i1) i2 = (i2 + 1) % FUNNY_NAMES.length;
+  _cachedNames = [FUNNY_NAMES[i1], FUNNY_NAMES[i2]];
+  _cachedMinute = minute;
+  return _cachedNames;
+}
+
+export function playerLabel(base: string, color?: string, position?: string): string {
   const parts: string[] = [];
   if (color) parts.push(color);
   if (position) parts.push(position);
@@ -142,8 +163,9 @@ const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) 
 
   if (!data) return null;
 
-  const p1Label = playerLabel("Player 1", data.player1Color, data.player1Position);
-  const p2Label = playerLabel("Player 2", data.player2Color, data.player2Position);
+  const [name1, name2] = getPlayerNames();
+  const p1Label = playerLabel(name1, data.player1Color, data.player1Position);
+  const p2Label = playerLabel(name2, data.player2Color, data.player2Position);
 
   return (
     <div className="space-y-6">
