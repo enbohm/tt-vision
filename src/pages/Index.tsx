@@ -41,8 +41,8 @@ const Index = () => {
         setProgress({ current: i + 1, total: chunks.length, retrying: false, retryDelay: 0 });
 
         let chunkData: any = null;
-        const maxRetries = 5;
-        const backoffDelays = [15000, 30000, 45000, 60000, 60000];
+        const maxRetries = 3;
+        const backoffDelays = [15000, 30000, 300000];
         for (let attempt = 0; attempt < maxRetries; attempt++) {
           const { data, error } = await supabase.functions.invoke("analyze-match", {
             body: {
