@@ -209,7 +209,9 @@ const Index = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up" style={{ animationDelay: "550ms" }}>
                 {analysis.player1Insight?.strength && (
                   <div className="bg-gradient-card rounded-lg border border-border p-5">
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">Player 1 Insight</p>
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
+                      {analysis.player1Color ? `Player 1 (${analysis.player1Color}) Insight` : "Player 1 Insight"}
+                    </p>
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
                         <span className="text-emerald-500 font-bold text-sm shrink-0">+</span>
@@ -224,7 +226,9 @@ const Index = () => {
                 )}
                 {analysis.player2Insight?.strength && (
                   <div className="bg-gradient-card rounded-lg border border-border p-5">
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">Player 2 Insight</p>
+                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
+                      {analysis.player2Color ? `Player 2 (${analysis.player2Color}) Insight` : "Player 2 Insight"}
+                    </p>
                     <div className="space-y-2">
                       <div className="flex items-start gap-2">
                         <span className="text-emerald-500 font-bold text-sm shrink-0">+</span>
