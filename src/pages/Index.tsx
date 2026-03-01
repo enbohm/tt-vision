@@ -31,6 +31,20 @@ const Index = () => {
 
       const chunks = await extractFramesInChunks(selectedFile, 30, 1);
 
+      // Warn if video was trimmed (check if last chunk ends before full duration)
+      const video = document.createElement("video");
+      video.preload = "metadata";
+      video.src = URL.createObjectURL(selectedFile);
+      await new Promise((r) => { video.onloadedmetadata = r; });
+      const fullDuration = video.duration;
+      URL.revokeObjectURL(video.src);
+      if (fullDuration > 180) {
+        toast({
+          title: "Video trimmed",
+          description: `Only the first 3 minutes (of ${Math.round(fullDuration / 60)}m) will be analyzed to avoid rate limits.`,
+        });
+      }
+
       setState("analyzing");
       setProgress({ current: 0, total: chunks.length, retrying: false, retryDelay: 0 });
 
