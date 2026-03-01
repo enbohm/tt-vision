@@ -38,10 +38,10 @@ const Index = () => {
       await new Promise((r) => { video.onloadedmetadata = r; });
       const fullDuration = video.duration;
       URL.revokeObjectURL(video.src);
-      if (fullDuration > 180) {
+      if (fullDuration > 300) {
         toast({
           title: "Video trimmed",
-          description: `Only the first 3 minutes (of ${Math.round(fullDuration / 60)}m) will be analyzed to avoid rate limits.`,
+          description: `Only the first 5 minutes (of ${Math.round(fullDuration / 60)}m) will be analyzed to avoid rate limits.`,
         });
       }
 
