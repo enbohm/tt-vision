@@ -12,7 +12,7 @@ export interface FrameChunk {
 }
 
 /** Max video duration we'll analyze (seconds). Longer clips are truncated. */
-const MAX_DURATION_SEC = 180; // 3 minutes
+const MAX_DURATION_SEC = 300; // 5 minutes
 
 export async function extractFramesInChunks(
   file: File,
