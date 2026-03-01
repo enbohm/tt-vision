@@ -11,6 +11,9 @@ export interface FrameChunk {
   frames: string[];
 }
 
+/** Max video duration we'll analyze (seconds). Longer clips are truncated. */
+const MAX_DURATION_SEC = 180; // 3 minutes
+
 export async function extractFramesInChunks(
   file: File,
   chunkDurationSec = 30,
@@ -27,7 +30,11 @@ export async function extractFramesInChunks(
     if (!ctx) return reject(new Error("Canvas not supported"));
 
     video.onloadedmetadata = () => {
-      const duration = video.duration;
+      const rawDuration = video.duration;
+      const duration = Math.min(rawDuration, MAX_DURATION_SEC);
+
+      // Lower frame rate for longer clips to reduce API calls
+      const effectiveFps = duration > 120 ? 0.5 : framesPerSecond;
       const totalChunks = Math.max(1, Math.ceil(duration / chunkDurationSec));
 
       // Cap dimensions for smaller payloads
@@ -41,7 +48,7 @@ export async function extractFramesInChunks(
         const startTime = c * chunkDurationSec;
         const endTime = Math.min((c + 1) * chunkDurationSec, duration);
         const segDuration = endTime - startTime;
-        const count = Math.max(3, Math.ceil(segDuration * framesPerSecond));
+        const count = Math.max(3, Math.ceil(segDuration * effectiveFps));
         const times: number[] = [];
         for (let i = 0; i < count; i++) {
           times.push(startTime + (segDuration / (count + 1)) * (i + 1));
