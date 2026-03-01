@@ -17,6 +17,7 @@ const Index = () => {
   const [state, setState] = useState<AppState>("upload");
   const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [videoDuration, setVideoDuration] = useState<number | null>(null);
   const [progress, setProgress] = useState({ current: 0, total: 0, retrying: false, retryDelay: 0 });
   const { toast } = useToast();
   const cancelRef = useRef(false);
@@ -38,10 +39,10 @@ const Index = () => {
       await new Promise((r) => { video.onloadedmetadata = r; });
       const fullDuration = video.duration;
       URL.revokeObjectURL(video.src);
-      if (fullDuration > 300) {
+      if (fullDuration > 360) {
         toast({
-          title: "Video trimmed",
-          description: `Only the first 5 minutes (of ${Math.round(fullDuration / 60)}m) will be analyzed to avoid rate limits.`,
+          title: "⚠️ Video trimmed",
+          description: `Your video is ${Math.round(fullDuration / 60)} minutes long. Only the first 6 minutes will be analyzed to ensure reliable results.`,
         });
       }
 
@@ -118,6 +119,7 @@ const Index = () => {
     setState("upload");
     setAnalysis(null);
     setErrorMsg("");
+    setVideoDuration(null);
     setProgress({ current: 0, total: 0, retrying: false, retryDelay: 0 });
   };
 
@@ -156,10 +158,33 @@ const Index = () => {
             setState("upload");
             setAnalysis(null);
             setErrorMsg("");
+            // Check video duration
+            const vid = document.createElement("video");
+            vid.preload = "metadata";
+            vid.src = URL.createObjectURL(file);
+            vid.onloadedmetadata = () => {
+              setVideoDuration(vid.duration);
+              URL.revokeObjectURL(vid.src);
+            };
           }}
           selectedFile={selectedFile}
           onClear={handleReset}
         />
+
+        {/* Duration warning */}
+        {videoDuration !== null && videoDuration > 360 && state === "upload" && (
+          <div className="flex items-start gap-3 rounded-lg border border-yellow-500/30 bg-yellow-500/5 p-4 animate-slide-up">
+            <span className="text-yellow-500 text-lg shrink-0">⚠️</span>
+            <div className="text-sm">
+              <p className="font-medium text-foreground">
+                Video is {Math.round(videoDuration / 60)} minutes long
+              </p>
+              <p className="text-muted-foreground mt-1">
+                Only the first 6 minutes will be analyzed. For best results, trim your clip before uploading.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Action Button */}
         {selectedFile && state === "upload" && (
