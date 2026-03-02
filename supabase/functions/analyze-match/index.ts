@@ -112,7 +112,7 @@ Analyze the frames carefully and provide match analysis. You must respond with O
     "bhOpeningAttacks": <number>,
     "bhOpeningAttackSuccess": <number, percentage>
   },
-  "summary": "<string, 1-2 sentence summary of what happened in this segment>",
+  "summary": "<string, MAX 2 short sentences: state the key reason each player won or lost points, and one specific thing each player should practice to improve>",
   "player1Insight": {
     "strength": "<string, one key strength of player 1 based on this segment>",
     "weakness": "<string, one key weakness of player 1 based on this segment>"
