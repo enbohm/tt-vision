@@ -30,7 +30,7 @@ const Index = () => {
       setState("extracting");
       setAnalysis(null);
 
-      const chunks = await extractFramesInChunks(selectedFile, 30, 1);
+      const chunks = await extractFramesInChunks(selectedFile, 30, 2);
 
       // Warn if video was trimmed (check if last chunk ends before full duration)
       const video = document.createElement("video");
