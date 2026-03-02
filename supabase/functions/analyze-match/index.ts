@@ -112,7 +112,7 @@ Analyze the frames carefully and provide match analysis. You must respond with O
     "bhOpeningAttacks": <number>,
     "bhOpeningAttackSuccess": <number, percentage>
   },
-  "summary": "<string, MAX 2 short sentences: state the key reason each player won or lost points, and one specific thing each player should practice to improve>",
+  "summary": "<string, MAX 2 sentences. Highlight only the standout patterns: e.g. 'Player 1 dominated with forehand attacks' or 'Player 2 lost mostly on unforced errors'. Do NOT narrate individual points or describe what happened chronologically. Focus on the biggest statistical tendencies and one actionable improvement tip per player.>",
   "player1Insight": {
     "strength": "<string, one key strength of player 1 based on this segment>",
     "weakness": "<string, one key weakness of player 1 based on this segment>"
