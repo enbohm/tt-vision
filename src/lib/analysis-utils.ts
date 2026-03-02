@@ -24,6 +24,7 @@ export interface PlayerStats {
 export interface PlayerInsight {
   strength: string;
   weakness: string;
+  drillRecommendation?: string;
 }
 
 export interface AnalysisData {
@@ -76,8 +77,8 @@ export function emptyAnalysis(): AnalysisData {
     player1: emptyPlayerStats(),
     player2: emptyPlayerStats(),
     summary: "",
-    player1Insight: { strength: "", weakness: "" },
-    player2Insight: { strength: "", weakness: "" },
+    player1Insight: { strength: "", weakness: "", drillRecommendation: "" },
+    player2Insight: { strength: "", weakness: "", drillRecommendation: "" },
   };
 }
 

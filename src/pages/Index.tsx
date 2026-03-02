@@ -265,6 +265,12 @@ const Index = () => {
                         <span className="text-destructive font-bold text-sm shrink-0">−</span>
                         <p className="text-sm text-foreground">{analysis.player1Insight.weakness}</p>
                       </div>
+                      {analysis.player1Insight.drillRecommendation && (
+                        <div className="flex items-start gap-2 mt-2 pt-2 border-t border-border">
+                          <span className="text-primary font-bold text-sm shrink-0">🏓</span>
+                          <p className="text-sm text-muted-foreground italic">{analysis.player1Insight.drillRecommendation}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -282,6 +288,12 @@ const Index = () => {
                         <span className="text-destructive font-bold text-sm shrink-0">−</span>
                         <p className="text-sm text-foreground">{analysis.player2Insight.weakness}</p>
                       </div>
+                      {analysis.player2Insight.drillRecommendation && (
+                        <div className="flex items-start gap-2 mt-2 pt-2 border-t border-border">
+                          <span className="text-primary font-bold text-sm shrink-0">🏓</span>
+                          <p className="text-sm text-muted-foreground italic">{analysis.player2Insight.drillRecommendation}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
