@@ -149,11 +149,11 @@ export function mergeChunkIntoAnalysis(
   // Collect summaries
   const summaries = [acc.summary, chunk.summary].filter(Boolean);
 
-  // Use the latest chunk's insights (last segment gives best overall picture)
-  const player1Insight = chunk.player1Insight?.strength
+  // Keep the most meaningful insight (prefer non-empty, latest wins if both valid)
+  const player1Insight = (chunk.player1Insight?.strength && chunk.player1Insight.strength.length > 2)
     ? chunk.player1Insight
     : acc.player1Insight;
-  const player2Insight = chunk.player2Insight?.strength
+  const player2Insight = (chunk.player2Insight?.strength && chunk.player2Insight.strength.length > 2)
     ? chunk.player2Insight
     : acc.player2Insight;
 

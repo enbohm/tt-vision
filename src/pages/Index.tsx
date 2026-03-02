@@ -249,59 +249,87 @@ const Index = () => {
               const [n1, n2] = getPlayerNames();
               const p1Label = playerLabel(n1, analysis.player1Color, analysis.player1Position);
               const p2Label = playerLabel(n2, analysis.player2Color, analysis.player2Position);
-              return (analysis.player1Insight?.strength || analysis.player2Insight?.strength) ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up" style={{ animationDelay: "550ms" }}>
-                {analysis.player1Insight?.strength && (
-                  <div className="bg-gradient-card rounded-lg border border-border p-5">
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
-                      {p1Label} Insight
-                    </p>
-                    <div className="space-y-2">
-                      <div className="flex items-start gap-2">
-                        <span className="text-emerald-500 font-bold text-sm shrink-0">+</span>
-                        <p className="text-sm text-foreground">{analysis.player1Insight.strength}</p>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-destructive font-bold text-sm shrink-0">−</span>
-                        <p className="text-sm text-foreground">{analysis.player1Insight.weakness}</p>
-                      </div>
-                      {analysis.player1Insight.drillRecommendation && (
-                        <div className="flex items-start gap-2 mt-2 pt-2 border-t border-border">
-                          <span className="text-primary font-bold text-sm shrink-0">🏓</span>
-                          <p className="text-sm text-muted-foreground italic">{analysis.player1Insight.drillRecommendation}</p>
+              const hasInsights = analysis.player1Insight?.strength || analysis.player2Insight?.strength;
+              const hasDrills = analysis.player1Insight?.drillRecommendation || analysis.player2Insight?.drillRecommendation;
+              return (
+                <>
+                  {hasInsights && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-slide-up" style={{ animationDelay: "550ms" }}>
+                      {analysis.player1Insight?.strength && (
+                        <div className="bg-gradient-card rounded-lg border border-border p-5">
+                          <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
+                            {p1Label} Insight
+                          </p>
+                          <div className="space-y-2">
+                            <div className="flex items-start gap-2">
+                              <span className="text-emerald-500 font-bold text-sm shrink-0">+</span>
+                              <p className="text-sm text-foreground">{analysis.player1Insight.strength}</p>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="text-destructive font-bold text-sm shrink-0">−</span>
+                              <p className="text-sm text-foreground">{analysis.player1Insight.weakness}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {analysis.player2Insight?.strength && (
+                        <div className="bg-gradient-card rounded-lg border border-border p-5">
+                          <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
+                            {p2Label} Insight
+                          </p>
+                          <div className="space-y-2">
+                            <div className="flex items-start gap-2">
+                              <span className="text-emerald-500 font-bold text-sm shrink-0">+</span>
+                              <p className="text-sm text-foreground">{analysis.player2Insight.strength}</p>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <span className="text-destructive font-bold text-sm shrink-0">−</span>
+                              <p className="text-sm text-foreground">{analysis.player2Insight.weakness}</p>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
-                  </div>
-                )}
-                {analysis.player2Insight?.strength && (
-                  <div className="bg-gradient-card rounded-lg border border-border p-5">
-                    <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
-                      {p2Label} Insight
-                    </p>
-                    <div className="space-y-2">
-                      <div className="flex items-start gap-2">
-                        <span className="text-emerald-500 font-bold text-sm shrink-0">+</span>
-                        <p className="text-sm text-foreground">{analysis.player2Insight.strength}</p>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="text-destructive font-bold text-sm shrink-0">−</span>
-                        <p className="text-sm text-foreground">{analysis.player2Insight.weakness}</p>
-                      </div>
-                      {analysis.player2Insight.drillRecommendation && (
-                        <div className="flex items-start gap-2 mt-2 pt-2 border-t border-border">
-                          <span className="text-primary font-bold text-sm shrink-0">🏓</span>
-                          <p className="text-sm text-muted-foreground italic">{analysis.player2Insight.drillRecommendation}</p>
+                  )}
+
+                  {/* Practice Drills - separate section */}
+                  {hasDrills && (
+                    <div className="animate-slide-up" style={{ animationDelay: "600ms" }}>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2 rounded-lg bg-primary/10">
+                          <span className="text-lg">🏓</span>
                         </div>
-                      )}
+                        <h2 className="text-lg font-semibold text-foreground">Practice Drills</h2>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {analysis.player1Insight?.drillRecommendation && (
+                          <div className="bg-gradient-card rounded-lg border border-border p-5">
+                            <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">
+                              {p1Label}
+                            </p>
+                            <p className="text-sm text-foreground leading-relaxed">
+                              {analysis.player1Insight.drillRecommendation}
+                            </p>
+                          </div>
+                        )}
+                        {analysis.player2Insight?.drillRecommendation && (
+                          <div className="bg-gradient-card rounded-lg border border-border p-5">
+                            <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">
+                              {p2Label}
+                            </p>
+                            <p className="text-sm text-foreground leading-relaxed">
+                              {analysis.player2Insight.drillRecommendation}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-              ) : null;
+                  )}
+                </>
+              );
             })()}
             {analysis.summary && (
-              <div className="bg-gradient-card rounded-lg border border-border p-5 animate-slide-up" style={{ animationDelay: "600ms" }}>
+              <div className="bg-gradient-card rounded-lg border border-border p-5 animate-slide-up" style={{ animationDelay: "650ms" }}>
                 <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">AI Summary</p>
                 <p className="text-sm text-foreground leading-relaxed">{analysis.summary}</p>
               </div>
