@@ -63,13 +63,13 @@ const VideoUploader = ({ onVideoSelect, selectedFile, onClear }: VideoUploaderPr
       onDragLeave={handleDrag}
       onDrop={handleDrop}
       className={`
-        relative flex flex-col items-center justify-center gap-4 p-12
-        rounded-lg border-2 border-dashed cursor-pointer
+        group relative flex flex-col items-center justify-center gap-5 p-14
+        rounded-xl border-2 border-dashed cursor-pointer
         transition-all duration-300
         ${
           isDragging
-            ? "border-primary bg-primary/5 glow-primary"
-            : "border-border hover:border-primary/50 hover:bg-card"
+            ? "border-primary bg-primary/5 glow-primary scale-[1.01]"
+            : "border-border hover:border-primary/40 hover:bg-card/50"
         }
       `}
     >
@@ -80,22 +80,28 @@ const VideoUploader = ({ onVideoSelect, selectedFile, onClear }: VideoUploaderPr
         className="hidden"
       />
       <div
-        className={`p-4 rounded-full transition-all duration-300 ${
-          isDragging ? "bg-primary/20 glow-primary" : "bg-secondary"
+        className={`p-5 rounded-2xl transition-all duration-300 ${
+          isDragging
+            ? "bg-primary/20 glow-primary"
+            : "bg-secondary group-hover:bg-primary/10"
         }`}
       >
-        <Upload className={`w-8 h-8 ${isDragging ? "text-primary" : "text-muted-foreground"}`} />
+        <Upload className={`w-8 h-8 transition-colors duration-300 ${isDragging ? "text-primary" : "text-muted-foreground group-hover:text-primary"}`} />
       </div>
       <div className="text-center space-y-2">
-        <p className="text-foreground font-medium">
-          {isDragging ? "Drop your video here" : "Drag & drop your match clip"}
+        <p className="text-foreground font-medium text-base">
+          {isDragging ? "Drop your video here" : "Drop your match clip here"}
         </p>
         <p className="text-sm text-muted-foreground">
-          or click to browse · MP4, MOV, WebM · Max 250 MB
+          or <span className="text-primary/80 underline underline-offset-2">browse files</span> · MP4, MOV, WebM · Max 250 MB
         </p>
-        <p className="text-xs text-muted-foreground/70 max-w-xs mx-auto leading-relaxed">
-          For best results: good resolution (720p+), both players visible, steady camera, and good lighting
-        </p>
+      </div>
+      <div className="flex items-center gap-4 pt-1 text-xs text-muted-foreground/60">
+        <span>720p+ recommended</span>
+        <span className="w-0.5 h-3 bg-border rounded-full" />
+        <span>Both players visible</span>
+        <span className="w-0.5 h-3 bg-border rounded-full" />
+        <span>Steady camera</span>
       </div>
     </label>
   );
