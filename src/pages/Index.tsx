@@ -132,11 +132,13 @@ const Index = () => {
         : `Analyzing segment ${progress.current} of ${progress.total}...`
       : "";
 
+  const showHero = state === "upload" && !selectedFile;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border">
-        <div className="container max-w-3xl mx-auto flex items-center gap-3 py-4 px-4">
+      <header className="border-b border-border/50 backdrop-blur-sm sticky top-0 z-10 bg-background/80">
+        <div className="container max-w-3xl mx-auto flex items-center gap-3 py-3 px-4">
           <div className="p-2 rounded-lg bg-primary/10 glow-primary flex items-center gap-2">
             <Activity className="w-5 h-5 text-primary" />
             <PingPongIcon className="w-5 h-5 text-red-500" />
@@ -152,6 +154,34 @@ const Index = () => {
 
       {/* Main */}
       <main className="container max-w-3xl mx-auto px-4 py-8 space-y-6">
+        {/* Hero Section - only when no file selected */}
+        {showHero && (
+          <div className="text-center space-y-4 pt-8 pb-4 animate-slide-up">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-mono text-primary">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              AI-POWERED ANALYSIS
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
+              Analyze your table tennis<br />
+              <span className="text-gradient-primary">matches in seconds</span>
+            </h2>
+            <p className="text-muted-foreground max-w-md mx-auto text-sm leading-relaxed">
+              Upload a match clip and get detailed stats, player insights, and personalized drill recommendations powered by AI.
+            </p>
+            <div className="flex items-center justify-center gap-6 pt-2 text-xs text-muted-foreground/70 font-mono">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-emerald-500" /> Score tracking
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-primary" /> Stroke analysis
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-amber-500" /> Drill tips
+              </span>
+            </div>
+          </div>
+        )}
+
         <VideoUploader
           onVideoSelect={(file) => {
             setSelectedFile(file);
