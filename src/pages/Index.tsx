@@ -142,6 +142,7 @@ const Index = () => {
           <div className="p-2 rounded-lg bg-primary/10 glow-primary flex items-center gap-2">
             <Activity className="w-5 h-5 text-primary" />
             <PingPongIcon className="w-5 h-5 text-red-500" />
+            <span className="text-lg leading-none">🇸🇪</span>
           </div>
           <div>
             <h1 className="text-lg font-bold text-foreground tracking-tight">
