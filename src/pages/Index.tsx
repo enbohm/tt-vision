@@ -158,10 +158,6 @@ const Index = () => {
         {/* Hero Section - only when no file selected */}
         {showHero && (
           <div className="text-center space-y-4 pt-8 pb-4 animate-slide-up">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-mono text-primary">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              AI-POWERED ANALYSIS
-            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
               Analyze your table tennis<br />
               <span className="text-gradient-primary">matches in seconds</span>
