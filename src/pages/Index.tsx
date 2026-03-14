@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Activity } from "lucide-react";
+import bgPlayers from "@/assets/bg-players.jpg";
 import PingPongIcon from "@/components/PingPongIcon";
 import VideoUploader from "@/components/VideoUploader";
 import AnalysisResults from "@/components/AnalysisResults";
