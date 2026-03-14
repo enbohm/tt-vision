@@ -161,7 +161,7 @@ const Index = () => {
       </header>
 
       {/* Main */}
-      <main className="container max-w-3xl mx-auto px-4 py-8 space-y-6">
+      <main className="container max-w-3xl mx-auto px-4 py-8 space-y-6 relative z-[1]">
         {/* Hero Section - only when no file selected */}
         {showHero && (
           <div className="text-center space-y-4 pt-8 pb-4 animate-slide-up">
