@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Activity } from "lucide-react";
+import bgPlayers from "@/assets/bg-players.jpg";
 import PingPongIcon from "@/components/PingPongIcon";
 import VideoUploader from "@/components/VideoUploader";
 import AnalysisResults from "@/components/AnalysisResults";
@@ -135,7 +136,13 @@ const Index = () => {
   const showHero = state === "upload" && !selectedFile;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Background image */}
+      <div
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-15"
+        style={{ backgroundImage: `url(${bgPlayers})` }}
+      />
+      <div className="fixed inset-0 z-0 bg-gradient-to-b from-background/80 via-background/90 to-background" />
       {/* Header */}
       <header className="border-b border-border/50 backdrop-blur-sm sticky top-0 z-10 bg-background/80">
         <div className="container max-w-3xl mx-auto flex items-center gap-3 py-3 px-4">
@@ -154,7 +161,7 @@ const Index = () => {
       </header>
 
       {/* Main */}
-      <main className="container max-w-3xl mx-auto px-4 py-8 space-y-6">
+      <main className="container max-w-3xl mx-auto px-4 py-8 space-y-6 relative z-[1]">
         {/* Hero Section - only when no file selected */}
         {showHero && (
           <div className="text-center space-y-4 pt-8 pb-4 animate-slide-up">
@@ -371,7 +378,7 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border/50 py-6 mt-12">
+      <footer className="border-t border-border/50 py-6 mt-12 relative z-[1]">
         <div className="container max-w-3xl mx-auto px-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground/60 font-mono">
           <span>Built in Sweden</span>
           <span>🇸🇪</span>
