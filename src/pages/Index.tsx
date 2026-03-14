@@ -378,7 +378,7 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border/50 py-6 mt-12">
+      <footer className="border-t border-border/50 py-6 mt-12 relative z-[1]">
         <div className="container max-w-3xl mx-auto px-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground/60 font-mono">
           <span>Built in Sweden</span>
           <span>🇸🇪</span>
