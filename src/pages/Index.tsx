@@ -139,10 +139,10 @@ const Index = () => {
     <div className="min-h-screen bg-background relative">
       {/* Background image */}
       <div
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-15"
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-30"
         style={{ backgroundImage: `url(${bgPlayers})` }}
       />
-      <div className="fixed inset-0 z-0 bg-gradient-to-b from-background/80 via-background/90 to-background" />
+      <div className="fixed inset-0 z-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
       {/* Header */}
       <header className="border-b border-border/50 backdrop-blur-sm sticky top-0 z-10 bg-background/80">
         <div className="container max-w-3xl mx-auto flex items-center gap-3 py-3 px-4">
