@@ -10,6 +10,7 @@ import { emptyAnalysis, mergeChunkIntoAnalysis, type AnalysisData } from "@/lib/
 import { getPlayerNames, playerLabel } from "@/components/AnalysisResults";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getTranslations, translateDetectedValue, type Language } from "@/lib/i18n";
 
 type AppState = "upload" | "extracting" | "analyzing" | "results" | "error";
 
@@ -20,8 +21,10 @@ const Index = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [videoDuration, setVideoDuration] = useState<number | null>(null);
   const [progress, setProgress] = useState({ current: 0, total: 0, retrying: false, retryDelay: 0 });
+  const [language, setLanguage] = useState<Language>("en");
   const { toast } = useToast();
   const cancelRef = useRef(false);
+  const t = getTranslations(language);
 
   const handleAnalyze = async () => {
     if (!selectedFile) return;
@@ -42,8 +45,8 @@ const Index = () => {
       URL.revokeObjectURL(video.src);
       if (fullDuration > 360) {
         toast({
-          title: "⚠️ Video trimmed",
-          description: `Your video is ${Math.round(fullDuration / 60)} minutes long. Only the first 6 minutes will be analyzed to ensure reliable results.`,
+          title: `⚠️ ${t.videoTrimmed}`,
+          description: t.trimToast(Math.round(fullDuration / 60)),
         });
       }
 
@@ -68,6 +71,7 @@ const Index = () => {
               totalChunks: chunks[i].totalChunks,
               startTime: chunks[i].startTime,
               endTime: chunks[i].endTime,
+              language,
             },
           });
 
@@ -89,7 +93,7 @@ const Index = () => {
             continue;
           }
 
-          if (error) throw new Error(error.message || "Analysis failed");
+          if (error) throw new Error(error.message || t.genericError);
           if (data?.error) throw new Error(data.error);
           chunkData = data;
           break;
@@ -103,11 +107,11 @@ const Index = () => {
     } catch (err: any) {
       if (cancelRef.current) return;
       console.error("Analysis error:", err);
-      const msg = err?.message || "Something went wrong";
+      const msg = err?.message || t.genericError;
       setErrorMsg(msg);
       setState("error");
       toast({
-        title: "Analysis Failed",
+        title: t.analysisFailed,
         description: msg,
         variant: "destructive",
       });
@@ -126,11 +130,11 @@ const Index = () => {
 
   const statusText =
     state === "extracting"
-      ? "Extracting video frames..."
+      ? t.extractingFrames
       : state === "analyzing"
       ? progress.retrying
-        ? `Rate limited — retrying segment ${progress.current} of ${progress.total} in ${progress.retryDelay}s...`
-        : `Analyzing segment ${progress.current} of ${progress.total}...`
+        ? t.retrying(progress.current, progress.total, progress.retryDelay)
+        : t.analyzingSegment(progress.current, progress.total)
       : "";
 
   const showHero = state === "upload" && !selectedFile;
@@ -155,7 +159,15 @@ const Index = () => {
             <h1 className="text-lg font-bold text-foreground tracking-tight">
               Ping<span className="text-gradient-primary">Analyst</span>
             </h1>
-            <p className="text-xs text-muted-foreground font-mono">TABLE TENNIS MATCH ANALYZER</p>
+            <p className="text-xs text-muted-foreground font-mono">{t.appSubtitle}</p>
+          </div>
+          <div className="ml-auto flex items-center rounded-md border border-border bg-secondary/60 p-1" aria-label={t.language}>
+            <Button variant={language === "en" ? "secondary" : "ghost"} size="sm" className="h-7 px-2.5 text-xs" onClick={() => setLanguage("en")} aria-pressed={language === "en"}>
+              EN
+            </Button>
+            <Button variant={language === "sv" ? "secondary" : "ghost"} size="sm" className="h-7 px-2.5 text-xs" onClick={() => setLanguage("sv")} aria-pressed={language === "sv"}>
+              SV
+            </Button>
           </div>
         </div>
       </header>
@@ -166,21 +178,21 @@ const Index = () => {
         {showHero && (
           <div className="text-center space-y-4 pt-8 pb-4 animate-slide-up">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
-              Analyze your table tennis<br />
-              <span className="text-gradient-primary">matches in seconds</span>
+              {t.heroTitle}<br />
+              <span className="text-gradient-primary">{t.heroAccent}</span>
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto text-sm leading-relaxed">
-              Upload a match clip and get detailed stats, player insights, and personalized drill recommendations powered by AI.
+              {t.heroBody}
             </p>
             <div className="flex items-center justify-center gap-6 pt-2 text-xs text-muted-foreground/70 font-mono">
               <span className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-emerald-500" /> Score tracking
+                <span className="w-1 h-1 rounded-full bg-emerald-500" /> {t.scoreTracking}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-primary" /> Stroke analysis
+                <span className="w-1 h-1 rounded-full bg-primary" /> {t.strokeAnalysis}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-amber-500" /> Drill tips
+                <span className="w-1 h-1 rounded-full bg-amber-500" /> {t.drillTips}
               </span>
             </div>
           </div>
@@ -203,6 +215,7 @@ const Index = () => {
           }}
           selectedFile={selectedFile}
           onClear={handleReset}
+          language={language}
         />
 
         {/* Duration warning */}
@@ -211,10 +224,10 @@ const Index = () => {
             <span className="text-yellow-500 text-lg shrink-0">⚠️</span>
             <div className="text-sm">
               <p className="font-medium text-foreground">
-                Video is {Math.round(videoDuration / 60)} minutes long
+                 {t.videoLength(Math.round(videoDuration / 60))}
               </p>
               <p className="text-muted-foreground mt-1">
-                Only the first 6 minutes will be analyzed. For best results, trim your clip before uploading.
+                 {t.trimWarning}
               </p>
             </div>
           </div>
@@ -229,7 +242,7 @@ const Index = () => {
               className="px-8 font-semibold glow-primary hover:glow-primary-intense transition-shadow"
             >
               <Activity className="w-4 h-4 mr-2" />
-              Analyze Match
+              {t.analyzeMatch}
             </Button>
           </div>
         )}
@@ -243,7 +256,7 @@ const Index = () => {
                   <Activity className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground">Analyzing Match...</h2>
+                  <h2 className="text-lg font-semibold text-foreground">{t.analyzingMatch}</h2>
                   <p className="text-sm text-muted-foreground">{statusText}</p>
                 </div>
               </div>
@@ -255,13 +268,13 @@ const Index = () => {
                 />
               </div>
             </div>
-            {analysis && <AnalysisResults data={analysis} />}
+            {analysis && <AnalysisResults data={analysis} language={language} />}
           </>
         )}
 
         {/* Extracting */}
         {state === "extracting" && (
-          <AnalysisResults data={null} isLoading statusText={statusText} />
+          <AnalysisResults data={null} isLoading statusText={statusText} language={language} />
         )}
 
         {/* Error */}
@@ -269,7 +282,7 @@ const Index = () => {
           <div className="text-center space-y-4 animate-slide-up">
             <p className="text-destructive font-mono text-sm">{errorMsg}</p>
             <Button variant="outline" onClick={handleReset}>
-              Try Again
+              {t.tryAgain}
             </Button>
           </div>
         )}
@@ -277,12 +290,12 @@ const Index = () => {
         {/* Final Results */}
         {state === "results" && analysis && (
           <>
-            <AnalysisResults data={analysis} />
+            <AnalysisResults data={analysis} language={language} />
             {/* Player Insights */}
             {(() => {
-              const [n1, n2] = getPlayerNames();
-              const p1Label = playerLabel(n1, analysis.player1Color, analysis.player1Position);
-              const p2Label = playerLabel(n2, analysis.player2Color, analysis.player2Position);
+               const [n1, n2] = getPlayerNames(language);
+               const p1Label = playerLabel(n1, translateDetectedValue(analysis.player1Color, language), translateDetectedValue(analysis.player1Position, language));
+               const p2Label = playerLabel(n2, translateDetectedValue(analysis.player2Color, language), translateDetectedValue(analysis.player2Position, language));
               const hasInsights = analysis.player1Insight?.strength || analysis.player2Insight?.strength;
               const hasDrills = analysis.player1Insight?.drillRecommendation || analysis.player2Insight?.drillRecommendation;
               return (
@@ -292,7 +305,7 @@ const Index = () => {
                       {analysis.player1Insight?.strength && (
                         <div className="bg-gradient-card rounded-lg border border-border p-5">
                           <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
-                            {p1Label} Insight
+                             {p1Label} · {t.playerInsight}
                           </p>
                           <div className="space-y-2">
                             <div className="flex items-start gap-2">
@@ -309,7 +322,7 @@ const Index = () => {
                       {analysis.player2Insight?.strength && (
                         <div className="bg-gradient-card rounded-lg border border-border p-5">
                           <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">
-                            {p2Label} Insight
+                             {p2Label} · {t.playerInsight}
                           </p>
                           <div className="space-y-2">
                             <div className="flex items-start gap-2">
@@ -333,7 +346,7 @@ const Index = () => {
                         <div className="p-2 rounded-lg bg-primary/10">
                           <span className="text-lg">🏓</span>
                         </div>
-                        <h2 className="text-lg font-semibold text-foreground">Practice Drills</h2>
+                         <h2 className="text-lg font-semibold text-foreground">{t.practiceDrills}</h2>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {analysis.player1Insight?.drillRecommendation && (
@@ -364,13 +377,13 @@ const Index = () => {
             })()}
             {analysis.summary && (
               <div className="bg-gradient-card rounded-lg border border-border p-5 animate-slide-up" style={{ animationDelay: "650ms" }}>
-                <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">AI Summary</p>
+                 <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-2">{t.aiSummary}</p>
                 <p className="text-sm text-foreground leading-relaxed">{analysis.summary}</p>
               </div>
             )}
             <div className="flex justify-center pt-4 animate-slide-up" style={{ animationDelay: "700ms" }}>
               <Button variant="outline" onClick={handleReset}>
-                Analyze Another Clip
+                 {t.analyzeAnother}
               </Button>
             </div>
           </>
@@ -380,7 +393,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border/50 py-6 mt-12 relative z-[1]">
         <div className="container max-w-3xl mx-auto px-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground/60 font-mono">
-          <span>Built in Sweden</span>
+          <span>{t.builtIn}</span>
           <span>🇸🇪</span>
         </div>
       </footer>
