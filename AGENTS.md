@@ -1,0 +1,1 @@
+- Keep all user-facing interface copy in the shared typed i18n module and pass the selected language to AI analysis, so UI and generated results stay aligned.
