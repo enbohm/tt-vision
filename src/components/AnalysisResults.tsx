@@ -118,18 +118,20 @@ export const FUNNY_NAMES = [
 
 let _cachedNames: [string, string] | null = null;
 let _cachedMinute = -1;
+let _cachedLanguage: Language | null = null;
 
 const SWEDISH_NAMES = ["Blixten Bea", "Snabba Sven", "Smash-Sara", "Topspin-Tobbe", "Backhand-Britta", "Slice-Simon", "Loop-Lisa", "Raket-Robin"];
 
 export function getPlayerNames(language: Language = "en"): [string, string] {
   const minute = Math.floor(Date.now() / 60000);
-  if (_cachedNames && _cachedMinute === minute) return _cachedNames;
+  if (_cachedNames && _cachedMinute === minute && _cachedLanguage === language) return _cachedNames;
   const names = language === "sv" ? SWEDISH_NAMES : FUNNY_NAMES;
   const i1 = minute % names.length;
   let i2 = (minute * 7 + 3) % names.length;
   if (i2 === i1) i2 = (i2 + 1) % names.length;
   _cachedNames = [names[i1], names[i2]];
   _cachedMinute = minute;
+  _cachedLanguage = language;
   return _cachedNames;
 }
 
