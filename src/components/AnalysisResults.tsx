@@ -1,6 +1,7 @@
 import StatCard from "./StatCard";
 import { Activity, Target, Zap, BarChart3, AlertTriangle, Trophy, Crosshair } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getTranslations, translateDetectedValue, type Language, type Translations } from "@/lib/i18n";
 
 interface PlayerStats {
   score: number;
@@ -40,9 +41,10 @@ interface AnalysisResultsProps {
   data: AnalysisData | null;
   isLoading?: boolean;
   statusText?: string;
+  language: Language;
 }
 
-const PlayerStatsSection = ({ stats, label, baseDelay = 0 }: { stats: PlayerStats; label: string; baseDelay?: number }) => (
+const PlayerStatsSection = ({ stats, baseDelay = 0, t }: { stats: PlayerStats; baseDelay?: number; t: Translations }) => (
   <div className="space-y-6">
     {/* Points */}
     <div>
@@ -50,11 +52,11 @@ const PlayerStatsSection = ({ stats, label, baseDelay = 0 }: { stats: PlayerStat
         <div className="p-2 rounded-lg bg-primary/10">
           <Trophy className="w-5 h-5 text-primary" />
         </div>
-        <h2 className="text-lg font-semibold text-foreground">Points</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t.points}</h2>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <StatCard label="Won on Serve" value={stats.pointsWonOnServe} color="green" delay={baseDelay + 50} />
-        <StatCard label="Won on Return" value={stats.pointsWonOnReturn} color="blue" delay={baseDelay + 100} />
+        <StatCard label={t.wonOnServe} value={stats.pointsWonOnServe} color="green" delay={baseDelay + 50} />
+        <StatCard label={t.wonOnReturn} value={stats.pointsWonOnReturn} color="blue" delay={baseDelay + 100} />
       </div>
     </div>
 
@@ -64,13 +66,13 @@ const PlayerStatsSection = ({ stats, label, baseDelay = 0 }: { stats: PlayerStat
         <div className="p-2 rounded-lg bg-primary/10">
           <AlertTriangle className="w-5 h-5 text-primary" />
         </div>
-        <h2 className="text-lg font-semibold text-foreground">Errors</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t.errors}</h2>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard label="Unforced" value={stats.unforcedErrors} color="red" delay={baseDelay + 200} />
-        <StatCard label="Forced" value={stats.forcedErrors} color="amber" delay={baseDelay + 250} />
-        <StatCard label="Under Pressure" value={stats.underPressureErrors} color="red" delay={baseDelay + 300} />
-        <StatCard label="Tactical" value={stats.tacticalErrors} color="amber" delay={baseDelay + 350} />
+        <StatCard label={t.unforced} value={stats.unforcedErrors} color="red" delay={baseDelay + 200} />
+        <StatCard label={t.forced} value={stats.forcedErrors} color="amber" delay={baseDelay + 250} />
+        <StatCard label={t.underPressure} value={stats.underPressureErrors} color="red" delay={baseDelay + 300} />
+        <StatCard label={t.tactical} value={stats.tacticalErrors} color="amber" delay={baseDelay + 350} />
       </div>
     </div>
 
@@ -80,13 +82,13 @@ const PlayerStatsSection = ({ stats, label, baseDelay = 0 }: { stats: PlayerStat
         <div className="p-2 rounded-lg bg-primary/10">
           <BarChart3 className="w-5 h-5 text-primary" />
         </div>
-        <h2 className="text-lg font-semibold text-foreground">Shots</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t.shots}</h2>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard label="FH Winners" value={stats.forehandWinners} color="green" delay={baseDelay + 450} />
-        <StatCard label="BH Winners" value={stats.backhandWinners} color="blue" delay={baseDelay + 500} />
-        <StatCard label="Topspin" value={stats.topspinShots} color="amber" delay={baseDelay + 550} />
-        <StatCard label="Net Points" value={stats.netPoints} color="primary" delay={baseDelay + 600} />
+        <StatCard label={t.fhWinners} value={stats.forehandWinners} color="green" delay={baseDelay + 450} />
+        <StatCard label={t.bhWinners} value={stats.backhandWinners} color="blue" delay={baseDelay + 500} />
+        <StatCard label={t.topspin} value={stats.topspinShots} color="amber" delay={baseDelay + 550} />
+        <StatCard label={t.netPoints} value={stats.netPoints} color="primary" delay={baseDelay + 600} />
       </div>
     </div>
 
@@ -96,12 +98,12 @@ const PlayerStatsSection = ({ stats, label, baseDelay = 0 }: { stats: PlayerStat
         <div className="p-2 rounded-lg bg-primary/10">
           <Crosshair className="w-5 h-5 text-primary" />
         </div>
-        <h2 className="text-lg font-semibold text-foreground">Attacking Play</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t.attackingPlay}</h2>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        <StatCard label="FH Forced Errors" value={stats.fhForcedErrorsCreated} subtitle="Created via forehand" color="green" delay={baseDelay + 700} />
-        <StatCard label="FH Opening Atk" value={stats.fhOpeningAttacks} subtitle={`${stats.fhOpeningAttackSuccess}% success`} color="primary" delay={baseDelay + 750} />
-        <StatCard label="BH Opening Atk" value={stats.bhOpeningAttacks} subtitle={`${stats.bhOpeningAttackSuccess}% success`} color="blue" delay={baseDelay + 800} />
+        <StatCard label={t.fhForcedErrors} value={stats.fhForcedErrorsCreated} subtitle={t.createdViaForehand} color="green" delay={baseDelay + 700} />
+        <StatCard label={t.fhOpeningAttack} value={stats.fhOpeningAttacks} subtitle={`${stats.fhOpeningAttackSuccess}% ${t.success}`} color="primary" delay={baseDelay + 750} />
+        <StatCard label={t.bhOpeningAttack} value={stats.bhOpeningAttacks} subtitle={`${stats.bhOpeningAttackSuccess}% ${t.success}`} color="blue" delay={baseDelay + 800} />
       </div>
     </div>
   </div>
@@ -116,15 +118,20 @@ export const FUNNY_NAMES = [
 
 let _cachedNames: [string, string] | null = null;
 let _cachedMinute = -1;
+let _cachedLanguage: Language | null = null;
 
-export function getPlayerNames(): [string, string] {
+const SWEDISH_NAMES = ["Blixten Bea", "Snabba Sven", "Smash-Sara", "Topspin-Tobbe", "Backhand-Britta", "Slice-Simon", "Loop-Lisa", "Raket-Robin"];
+
+export function getPlayerNames(language: Language = "en"): [string, string] {
   const minute = Math.floor(Date.now() / 60000);
-  if (_cachedNames && _cachedMinute === minute) return _cachedNames;
-  const i1 = minute % FUNNY_NAMES.length;
-  let i2 = (minute * 7 + 3) % FUNNY_NAMES.length;
-  if (i2 === i1) i2 = (i2 + 1) % FUNNY_NAMES.length;
-  _cachedNames = [FUNNY_NAMES[i1], FUNNY_NAMES[i2]];
+  if (_cachedNames && _cachedMinute === minute && _cachedLanguage === language) return _cachedNames;
+  const names = language === "sv" ? SWEDISH_NAMES : FUNNY_NAMES;
+  const i1 = minute % names.length;
+  let i2 = (minute * 7 + 3) % names.length;
+  if (i2 === i1) i2 = (i2 + 1) % names.length;
+  _cachedNames = [names[i1], names[i2]];
   _cachedMinute = minute;
+  _cachedLanguage = language;
   return _cachedNames;
 }
 
@@ -136,7 +143,8 @@ export function playerLabel(base: string, color?: string, position?: string): st
   return base;
 }
 
-const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) => {
+const AnalysisResults = ({ data, isLoading, statusText, language }: AnalysisResultsProps) => {
+  const t = getTranslations(language);
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -145,8 +153,8 @@ const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) 
             <Activity className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Analyzing Match...</h2>
-            <p className="text-sm text-muted-foreground">{statusText || "Processing video frames"}</p>
+            <h2 className="text-lg font-semibold text-foreground">{t.analyzingMatch}</h2>
+            <p className="text-sm text-muted-foreground">{statusText || t.processingFrames}</p>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -163,9 +171,9 @@ const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) 
 
   if (!data) return null;
 
-  const [name1, name2] = getPlayerNames();
-  const p1Label = playerLabel(name1, data.player1Color, data.player1Position);
-  const p2Label = playerLabel(name2, data.player2Color, data.player2Position);
+  const [name1, name2] = getPlayerNames(language);
+  const p1Label = playerLabel(name1, translateDetectedValue(data.player1Color, language), translateDetectedValue(data.player1Position, language));
+  const p2Label = playerLabel(name2, translateDetectedValue(data.player2Color, language), translateDetectedValue(data.player2Position, language));
 
   return (
     <div className="space-y-6">
@@ -175,7 +183,7 @@ const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) 
           <div className="p-2 rounded-lg bg-primary/10 glow-primary">
             <Target className="w-5 h-5 text-primary" />
           </div>
-          <h2 className="text-lg font-semibold text-foreground">Match Score</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t.matchScore}</h2>
         </div>
         <div className="bg-gradient-card rounded-lg border border-border p-6 flex items-center justify-center gap-8">
           <div className="text-center">
@@ -196,19 +204,19 @@ const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) 
           <div className="p-2 rounded-lg bg-primary/10">
             <Zap className="w-5 h-5 text-primary" />
           </div>
-          <h2 className="text-lg font-semibold text-foreground">Rally Overview</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t.rallyOverview}</h2>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard label="Total Points" value={data.totalPoints} color="primary" delay={150} />
-          <StatCard label="Total Rallies" value={data.totalRallies} color="blue" delay={200} />
-          <StatCard label="Avg Rally" value={`${data.avgRallyLength}s`} color="green" delay={250} />
-          <StatCard label="Longest Rally" value={`${data.longestRally}s`} color="amber" delay={300} />
+          <StatCard label={t.totalPoints} value={data.totalPoints} color="primary" delay={150} />
+          <StatCard label={t.totalRallies} value={data.totalRallies} color="blue" delay={200} />
+          <StatCard label={t.avgRally} value={`${data.avgRallyLength}s`} color="green" delay={250} />
+          <StatCard label={t.longestRally} value={`${data.longestRally}s`} color="amber" delay={300} />
         </div>
       </div>
 
       {/* Serve Speed */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-slide-up" style={{ animationDelay: "350ms" }}>
-        <StatCard label="Est. Serve Speed" value={data.serveSpeed} subtitle="Based on motion analysis" color="primary" delay={350} />
+        <StatCard label={t.serveSpeed} value={data.serveSpeed} subtitle={t.motionAnalysis} color="primary" delay={350} />
       </div>
 
       {/* Per-Player Tabs */}
@@ -218,10 +226,10 @@ const AnalysisResults = ({ data, isLoading, statusText }: AnalysisResultsProps) 
           <TabsTrigger value="player2">{p2Label}</TabsTrigger>
         </TabsList>
         <TabsContent value="player1" className="mt-4">
-          <PlayerStatsSection stats={data.player1} label={p1Label} baseDelay={450} />
+          <PlayerStatsSection stats={data.player1} baseDelay={450} t={t} />
         </TabsContent>
         <TabsContent value="player2" className="mt-4">
-          <PlayerStatsSection stats={data.player2} label={p2Label} baseDelay={450} />
+          <PlayerStatsSection stats={data.player2} baseDelay={450} t={t} />
         </TabsContent>
       </Tabs>
     </div>

@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { frames, chunkIndex, totalChunks, startTime, endTime } = await req.json();
+    const { frames, chunkIndex, totalChunks, startTime, endTime, language = "en" } = await req.json();
 
     if (!frames || !Array.isArray(frames) || frames.length === 0) {
       return new Response(JSON.stringify({ error: "No frames provided" }), {
@@ -31,6 +31,8 @@ serve(async (req) => {
       type: "image_url" as const,
       image_url: { url: frame },
     }));
+
+    const outputLanguage = language === "sv" ? "Swedish" : "English";
 
     const chunkContext = totalChunks > 1
       ? `\n\nIMPORTANT: This is segment ${chunkIndex + 1} of ${totalChunks} (time ${Math.round(startTime)}s – ${Math.round(endTime)}s). Only report what happens in THIS segment. The results will be summed across all segments automatically. For "score", report ONLY the points scored in this segment (not cumulative). Be thorough — count EVERY rally and point in these frames.`
@@ -63,6 +65,8 @@ IMPORTANT TABLE TENNIS RULES:
 - When you detect players changing sides, treat it as the end of a game. The score at that point should reflect an 11-point game (e.g. 11-9, 11-7, 11-5, etc.).
 - After a side change, continue tracking points for the NEW game but keep accumulating the total score.
 - Track which player is which based on their appearance (clothing, build, etc.), NOT their position, since positions swap after each game.
+
+LANGUAGE REQUIREMENT: Write every natural-language value in ${outputLanguage}. This includes colors, positions, summary, strengths, weaknesses, and drill recommendations. Keep all JSON property names exactly as specified in English.
 
 Analyze the frames carefully and provide match analysis. You must respond with ONLY a valid JSON object (no markdown, no code blocks) with this exact structure:
 
@@ -132,7 +136,7 @@ Count EVERY point carefully. Each rally that ends with a point scored must be co
               content: [
                 {
                   type: "text",
-                  text: `Analyze these ${frames.length} frames from a table tennis match video. Count every single point and rally carefully.`,
+                  text: `Analyze these ${frames.length} frames from a table tennis match video. Count every single point and rally carefully. Return all descriptive text in ${outputLanguage}.`,
                 },
                 ...imageParts,
               ],
