@@ -66,6 +66,13 @@ const translations = {
     english: "English",
     swedish: "Svenska",
     language: "Language",
+    matchHistory: "Match History",
+    history: "History",
+    back: "Back",
+    noHistory: "No saved analyses yet. Analyze a match and it will be saved here on this device.",
+    progressTrend: "Progress over time (Player 1)",
+    trendLegend: "Number = share of points won. Red bar = unforced errors.",
+    delete: "Delete",
   },
   sv: {
     appSubtitle: "MATCHANALYS FÖR BORDTENNIS",
@@ -132,6 +139,13 @@ const translations = {
     english: "English",
     swedish: "Svenska",
     language: "Språk",
+    matchHistory: "Matchhistorik",
+    history: "Historik",
+    back: "Tillbaka",
+    noHistory: "Inga sparade analyser än. Analysera en match så sparas den här på den här enheten.",
+    progressTrend: "Utveckling över tid (spelare 1)",
+    trendLegend: "Siffra = andel vunna poäng. Röd stapel = oprovocerade misstag.",
+    delete: "Ta bort",
   },
 } as const;
 

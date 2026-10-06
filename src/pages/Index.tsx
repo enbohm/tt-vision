@@ -1,5 +1,7 @@
 import { useState, useRef } from "react";
-import { Activity } from "lucide-react";
+import { Activity, History } from "lucide-react";
+import { Link } from "react-router-dom";
+import { saveToHistory, loadLanguage, storeLanguage } from "@/lib/history";
 import bgPlayers from "@/assets/bg-players.jpg";
 import PingPongIcon from "@/components/PingPongIcon";
 import VideoUploader from "@/components/VideoUploader";
@@ -21,7 +23,8 @@ const Index = () => {
   const [errorMsg, setErrorMsg] = useState("");
   const [videoDuration, setVideoDuration] = useState<number | null>(null);
   const [progress, setProgress] = useState({ current: 0, total: 0, retrying: false, retryDelay: 0 });
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguageState] = useState<Language>(loadLanguage);
+  const setLanguage = (l: Language) => { setLanguageState(l); storeLanguage(l); };
   const { toast } = useToast();
   const cancelRef = useRef(false);
   const t = getTranslations(language);
@@ -103,6 +106,7 @@ const Index = () => {
         setAnalysis({ ...accumulated });
       }
 
+      saveToHistory(selectedFile.name, accumulated);
       setState("results");
     } catch (err: any) {
       if (cancelRef.current) return;
@@ -161,7 +165,10 @@ const Index = () => {
             </h1>
             <p className="text-xs text-muted-foreground font-mono">{t.appSubtitle}</p>
           </div>
-          <div className="ml-auto flex items-center rounded-md border border-border bg-secondary/60 p-1" aria-label={t.language}>
+          <Button asChild variant="ghost" size="sm" className="ml-auto h-8 text-xs">
+            <Link to="/history"><History className="h-4 w-4 sm:mr-1" /><span className="hidden sm:inline">{t.history}</span></Link>
+          </Button>
+          <div className="flex items-center rounded-md border border-border bg-secondary/60 p-1" aria-label={t.language}>
             <Button variant={language === "en" ? "secondary" : "ghost"} size="sm" className="h-7 px-2.5 text-xs" onClick={() => setLanguage("en")} aria-pressed={language === "en"}>
               EN
             </Button>
